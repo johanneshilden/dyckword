@@ -41,7 +41,7 @@ empty = DyckWord
   { _size    = 0
   , _absRank = 0
   , _relRank = 0
-  , _text    = "" } 
+  , _text    = T.empty } 
 
 size :: DyckWord -> Size
 size = _size
