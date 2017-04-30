@@ -141,6 +141,10 @@ type Rank = Integer
 --     * 'unrank', 
 --     * 'unrankRelative', and 
 --     * 'unrankRelative''.
+--
+-- Conceptually, every non-empty Dyck word has the form /(a)b/, where /a/ and
+-- /b/ are Dyck words. The BNF grammar for this language is given by 
+-- \( \omega = \epsilon \mid ( \omega ) \omega \).
 data DyckWord = DyckWord 
   { _size    :: !Size
   , _absRank :: !Rank
