@@ -1,15 +1,76 @@
+-- |
+--
+-- Module      : Math.DyckWord.Binary
+-- Copyright   : (c) 2017 Johannes Hildén
+-- License     : BSD3
+-- Maintainer  : johannes@isomorphic.co
+-- Stability   : experimental
+-- Portability : GHC
+--
+-- == Background
+--
+-- In formal language theory, the /Dyck language/ consists of all strings of 
+-- evenly balanced left and right parentheses, brackets, or some other 
+-- symbols, together with the /empty/ word. Words in this language (named 
+-- after German mathematician Walther von Dyck) are known as /Dyck words/, 
+-- some examples of which are @()()()@, @(())((()))@, and @((()()))()@.
+--
+-- The type of Dyck language considered here is defined over a binary alphabet. 
+-- For concreteness, we will take this alphabet to be the set &#931; = {(, )}
+-- in the following examples. The binary Dyck language is the subset of &#931;* 
+-- (the Kleene closure of &#931;) of all words that satisfy two conditions:
+-- 
+-- 1. The number of left brackets must be the same as the number of right 
+--    brackets.
+-- 2. Going from left to right, for each character read, the total number of 
+--    right brackets visited must be less than or equal to the number of left 
+--    brackets up to the same position.
+--
+-- E.g., @(()(()@ and @())(())()@ are __not__ Dyck words.
+--
+-- When regarded as a combinatorial class&#8212;with the 'size' of a word defined as 
+-- the number of bracket pairs it contains&#8212;the counting sequence associated 
+-- with the Dyck language is the /Catalan numbers/.
+--
+-- \[ 
+--    \begin{array}{ccl}
+--      \text{Size} & \text{Count} & \text{Words}
+--      \\
+--      0 & 1   & \epsilon
+--      \\
+--      1 & 1   & ⟨⟩
+--      \\
+--      2 & 2   & ⟨⟩⟨⟩, \ ⟨⟨⟩⟩
+--      \\
+--      3 & 5   & ⟨⟩⟨⟩⟨⟩, \ ⟨⟩⟨⟨⟩⟩, \ ⟨⟨⟩⟩⟨⟩, \ ⟨⟨⟩⟨⟩⟩, \ ⟨⟨⟨⟩⟩⟩
+--      \\
+--      4 & 14  & ⟨⟩⟨⟩⟨⟩⟨⟩, \ ⟨⟩⟨⟩⟨⟨⟩⟩, \ ⟨⟩⟨⟨⟩⟩⟨⟩, \ ⟨⟩⟨⟨⟩⟨⟩⟩, \ ⟨⟩⟨⟨⟨⟩⟩⟩, \ ⟨⟨⟩⟩⟨⟩⟨⟩, \ ⟨⟨⟩⟩⟨⟨⟩⟩, \ ⟨⟨⟩⟨⟩⟩⟨⟩,
+--      \\
+--        &     & ⟨⟨⟨⟩⟩⟩⟨⟩, \ ⟨⟨⟩⟨⟩⟨⟩⟩, \ ⟨⟨⟩⟨⟨⟩⟩⟩, \ ⟨⟨⟨⟩⟩⟨⟩⟩, \ ⟨⟨⟨⟩⟨⟩⟩⟩, \ ⟨⟨⟨⟨⟩⟩⟩⟩
+--      \\
+--      5 & 42  & ⟨⟩⟨⟩⟨⟩⟨⟩⟨⟩, \ ⟨⟩⟨⟩⟨⟩⟨⟨⟩⟩, \ ⟨⟩⟨⟩⟨⟨⟩⟩⟨⟩, \ ⟨⟩⟨⟩⟨⟨⟩⟨⟩⟩, \ ⟨⟩⟨⟩⟨⟨⟨⟩⟩⟩, \ \dots, \ ⟨⟨⟨⟨⟨⟩⟩⟩⟩⟩
+--      \\
+--      6 & 132 & \dots
+--    \end{array}
+-- \]
+
 module Math.DyckWord.Binary
   ( Size
   , Rank
+  , DyckWord
+  -- ** Creating and inspecting Dyck words
   , empty
   , size 
   , setAlphabet
   , concatWords 
-  , rank 
-  , rankRelative 
+  -- *** Textual form
   , fromText 
   , fromText'
   , toText
+  -- ** Ranking and unranking
+  -- $ranking
+  , rank 
+  , rankRelative 
   , unrank 
   , unrankRelative 
   , unrankRelative'
@@ -22,6 +83,48 @@ import Data.Text                           ( Text, unfoldrN )
 import Math.DyckWord.Binary.Internal
 
 import qualified Data.Text                 as T
+
+-- $ranking
+--
+-- To /rank/ a Dyck word is to determine its position in some ordered sequence 
+-- of words. The dual of this&#8212;to produce the Dyck word corresponding to a 
+-- position in said sequence&#8212;is called /unranking/. The order we are 
+-- interested in here is known as /shortlex/, and it demands that a smaller 
+-- Dyck word always gets precedence over a bigger one. When comparing words of 
+-- the same size, normal lexicographical order applies. 
+--
+-- === Relative vs. absolute rank
+--
+-- In this library, we adopt the following (non-standard) terminology.
+-- The /relative/ rank of a Dyck word /w/ is its position in the sequence of 
+-- those words with the same size as /w/. By contrast, the /absolute/ rank 
+-- means a word's position in the shortlex sequence of __all__ Dyck words.
+-- /For example:/ The (absolute) rank of @(((())))@ is 9, but the relative rank 
+-- of the same word is 0, since it is the first word of size four.
+--
+-- \[
+--    \begin{array}{lccc}
+--      \text{Word} & \text{Size} & \text{Rank} & \text{Relative rank}
+--      \\
+--      \epsilon & 0 & 0 & 0 \\
+--      ⟨⟩       & 1 & 1 & 0 \\
+--      ⟨⟨⟩⟩     & 2 & 2 & 0 \\
+--      ⟨⟩⟨⟩     & 2 & 3 & 1 \\
+--      ⟨⟨⟨⟩⟩⟩   & 3 & 4 & 0 \\
+--      ⟨⟨⟩⟨⟩⟩   & 3 & 5 & 1 \\
+--      ⟨⟨⟩⟩⟨⟩   & 3 & 6 & 2 \\
+--      ⟨⟩⟨⟨⟩⟩   & 3 & 7 & 3 \\
+--      ⟨⟩⟨⟩⟨⟩   & 3 & 8 & 4 \\
+--      ⟨⟨⟨⟨⟩⟩⟩⟩ & 4 & 9 & 0 \\
+--      ⟨⟨⟨⟩⟨⟩⟩⟩ & 4 & 10 & 1 \\
+--      \;\;\;\; \vdots & \vdots & \vdots & \vdots
+--    \end{array}
+-- \]
+--
+-- If we let \(r(w)\) denote the relative rank of a word \(w\), and \(C_i\) the 
+-- \(i^{th}\) Catalan number, then the absolute rank \(R(w)\) of \(w\) is given 
+-- by the formula \( R(w) = r(w) + \sum_{i=0}^{s-1} C_i, \) where \(s\) is the 
+-- size of \(w\).
 
 type Size = Integer
 type Rank = Integer
@@ -46,6 +149,17 @@ empty = DyckWord
   , _relRank = 0
   , _text    = T.empty } 
 
+-- | The /size/ of a Dyck word is the number of bracket pairs it contains, 
+--   i.e., half of the length of the word's string representation. Inductively, 
+--   it can be defined as
+--
+-- \[ 
+--    \text{size}\;w = 
+--      \begin{cases}
+--        0 && \text{if} \; w = \epsilon \\
+--        1 + \text{size}\;u + \text{size}\;v && \text{if} \; w = (u)v.  
+--      \end{cases}
+-- \]
 size :: DyckWord -> Size
 size = _size
 
@@ -71,6 +185,15 @@ setAlphabet a' b' w = w { _text = f `T.map` t }
         | c == b = b'
         | otherwise = error "not a valid dyck word"
 
+-- | Concatenate two Dyck words. Corresponds to ordinary string concatenation.
+--
+-- \[ 
+--    \begin{align}
+--      \epsilon +\!\!\!+\;w &= w 
+--      \\
+--      (u)v     +\!\!\!+\;w &= (u)[ v +\!\!\!+\; w ]
+--    \end{align}
+-- \]
 concatWords :: DyckWord -> DyckWord -> DyckWord
 concatWords a b = fromText' (juxtapose a b)
 
@@ -84,6 +207,8 @@ rank = _absRank
 rankRelative :: DyckWord -> Rank
 rankRelative = _relRank
 
+-- | Parse a 'Text' value to a 'DyckWord'. The result is wrapped in a 'Maybe', 
+--   so that the value is 'Nothing' if parsing fails. 
 fromText :: Text -> Either String DyckWord
 fromText t 
     | T.null t  = Right empty
@@ -108,17 +233,24 @@ fromText t
       | c == b = Right (i + catalanTriangle y (x - 1), x, y - 1)
     f _ _ = err
 
+-- | Parse a 'Text' value to a 'DyckWord'. Throws an error if parsing fails.
+--   This is an unsafe version of 'fromText'.
 fromText' :: Text -> DyckWord
 fromText' t = 
     case fromText t of
       Right r -> r 
       Left  _ -> error "not a valid dyck word"
 
+-- | Return the textual representation of a 'DyckWord'.
 toText :: DyckWord -> Text
 toText = _text
 
+-- | Return the /n/-th Dyck word in the (shortlex) ordered sequence of /all/
+--   Dyck words. 
 unrank :: Rank -> DyckWord 
-unrank r = unrankRelative' s i
+unrank r 
+    | r < 0 = error "rank cannot be negative"
+    | otherwise = unrankRelative' s i
   where
     (s, i) = sizeOffs r 0 
 
@@ -129,6 +261,9 @@ sizeOffs n x
   where 
     c = catalan (fromIntegral x)
 
+-- | Return the /n/-th Dyck word, restricted to only words of a given size.
+--   Words are lexicographically ordered. The result is wrapped in a 'Maybe', 
+--   since . 
 unrankRelative :: Size -> Rank -> Maybe DyckWord 
 unrankRelative s r 
     | r < 0 
@@ -148,9 +283,12 @@ unrankRelative s r
       where 
         j = i - catalanTriangle y (x - 1) 
 
+-- | This is an unsafe version of 'unrankRelative'.
 unrankRelative' :: Size -> Rank -> DyckWord
 unrankRelative' s = fromJust . unrankRelative s
 
+-- | Return a lexicographically ordered list with all Dyck words of a specific 
+--   size.
 wordsOfSize :: Size -> [DyckWord]
 wordsOfSize = ofSize unrankRelative' 
 
