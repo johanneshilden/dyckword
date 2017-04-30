@@ -38,10 +38,24 @@ rankAfterUnrank n = showN n `saysThat` rank (unrank n) `shouldBe` n
 checkSize :: Integer -> Integer -> IO ()
 checkSize s n = show (s, n) `saysThat` size (unrankRelative' s n) `shouldBe` s
 
-concatRespectsSize a b = size (u <> v) `shouldBe` (size u + size v)
+sizeShouldBeHomomorphic :: T.Text -> T.Text -> Expectation
+sizeShouldBeHomomorphic a b = size (u <> v) `shouldBe` (size u + size v)
   where
     u = fromText' a
     v = fromText' b
+
+checkIdentity :: Integer -> IO ()
+checkIdentity n = show n `saysThat` do 
+    empty <> unrank n `shouldBe` (unrank n)
+    unrank n <> empty `shouldBe` (unrank n)
+
+checkAssociativity :: (Integer, Integer, Integer) -> IO ()
+checkAssociativity triple@(a, b, c) = show triple `saysThat` p
+  where
+    p = ((u <> v) <> w) `shouldBe` (u <> (v <> w))
+    u = unrank a
+    v = unrank b
+    w = unrank c
 
 main :: IO ()
 main = hspec $ do
@@ -51,6 +65,7 @@ main = hspec $ do
         forM_ [10, 12, 22, 123, 425, 1028] $
           forM_ [1..22] . checkSize 
         setCursorColumn 0
+        clearFromCursorToLineEnd
 
     describe "rank" $ do
       it "is the inverse of unrank" $ do
@@ -61,6 +76,7 @@ main = hspec $ do
              ++ [catalan  11..catalan 11+989]   
              ++ [0..1000] ) rankAfterUnrank
         setCursorColumn 0
+        clearFromCursorToLineEnd
 
     describe "unrankRelative" $ do
       it "returns Nothing for invalid relative rank" $ do
@@ -110,10 +126,21 @@ main = hspec $ do
 
     describe "concatWords" $ do
       it "returns a word with size equal to the sum of the sizes of the inputs" $ do
-        concatRespectsSize "(()())" "(((())))"
-        concatRespectsSize "ababaaaabbbb" "(((())))"
-        concatRespectsSize "" "(((())))"
+        sizeShouldBeHomomorphic "(()())" "(((())))"
+        sizeShouldBeHomomorphic "ababaaaabbbb" "(((())))"
+        sizeShouldBeHomomorphic "" "(((())))"
 
       it "works with different alphabets" $ do
         concatWords (fromText' "()()") (fromText' "aaaabbbb") `shouldBe` (fromText' "()()(((())))")
         concatWords (fromText' "()()") (fromText' "aaaabbbb") `shouldBe` (fromText' "010100001111")
+
+      it "satisfies the identity law" $ do
+        forM_ [0, 20..33350] checkIdentity
+        setCursorColumn 0
+        clearFromCursorToLineEnd
+
+      it "is associative" $ do
+        forM_ [(a, b, c) | a <- [0, 20, 1000], b <- [0..300], c <- [0, 50..200]] checkAssociativity
+        setCursorColumn 0
+        clearFromCursorToLineEnd
+
