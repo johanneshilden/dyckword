@@ -34,6 +34,9 @@ checkSize s n = do
     clearFromCursorToLineEnd
     size (unrankRelative' s n) `shouldBe` s
 
+makeSure :: Bool -> Expectation
+makeSure = shouldBe True  
+
 main :: IO ()
 main = hspec $ do
 
@@ -71,3 +74,24 @@ main = hspec $ do
       it "has rank 0, and relative rank 0" $ do
         rank empty `shouldBe` 0
         rankRelative empty `shouldBe` 0
+
+    describe "Ord" $ do
+      it "works as expected" $ do
+        makeSure (unrank 100 <= unrank 101) 
+        makeSure (unrank 0 <= unrank 1) 
+        makeSure (unrank 1 > unrank 0) 
+        makeSure (unrank (10^16) > unrank (10^15)) 
+        makeSure $ not (unrank 1235 > unrank 2000) 
+
+    describe "Eq" $ do
+      it "works with unrank" $ do
+        makeSure (unrank 0 == empty)
+        makeSure (unrank 1 == fromText' "()") 
+        makeSure (unrank 2 == fromText' "(())") 
+        makeSure (unrank 3 == fromText' "()()")
+        makeSure (unrank 123 == fromText' "(()(())()())") 
+        makeSure (unrank 123 == fromText' "001001101011") 
+
+      it "works with different alphabets" $ do
+        makeSure (fromText' "(()(())()())" == fromText' "001001101011") 
+
