@@ -7,7 +7,7 @@ The type of Dyck language considered here is defined over a binary alphabet. We 
 1. The number of left brackets must be the same as the number of right brackets.
 2. Going from left to right, for each character read, the total number of right brackets visited must be less than or equal to the number of left brackets up to the current position.
 
-E.g., `(()(()` and `())(())()` are not Dyck words.
+E.g., `(()(()` and `())(())()` are **not** Dyck words.
 
 When regarded as a combinatorial class &ndash; with the size of a word defined as the number of bracket pairs it contains &ndash; the counting sequence associated with the Dyck language is the *Catalan numbers*.
 
