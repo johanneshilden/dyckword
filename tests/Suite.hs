@@ -2,6 +2,7 @@
 module Main where
 
 import Control.Monad ( forM_ )
+import Data.Either   ( isLeft )
 import Data.Monoid   ( (<>) )
 import System.Console.ANSI
 import System.Exit   ( exitFailure )
@@ -158,4 +159,14 @@ main = hspec $ do
       it "matches the Catalan numbers" $ do
         forM_ [0..17] checkWordsOfSizeCatalan
         resetCursor
+
+    describe "fromText" $ do
+      it "should return a Left value on bad input" $ do
+        fromText "(((" `shouldSatisfy` isLeft
+        fromText "((()" `shouldSatisfy` isLeft
+        fromText "((())" `shouldSatisfy` isLeft
+        fromText "))(" `shouldSatisfy` isLeft
+        fromText "))()" `shouldSatisfy` isLeft
+        fromText "(()))" `shouldSatisfy` isLeft
+        fromText "((x)" `shouldSatisfy` isLeft
 
