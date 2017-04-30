@@ -54,20 +54,21 @@
 --    \end{array}
 -- \]
 
-module Math.DyckWord.Binary
-  ( Size
+module Math.DyckWord.Binary ( 
+  -- * Types
+    Size
   , Rank
   , DyckWord
-  -- ** Creating and inspecting Dyck words
+  -- * Creating and inspecting Dyck words
   , empty
   , size 
   , setAlphabet
   , concatWords 
-  -- *** Textual form
+  -- ** Textual form
   , fromText 
   , fromText'
   , toText
-  -- ** Ranking and unranking
+  -- * Ranking and unranking
   -- $ranking
   , rank 
   , rankRelative 
@@ -126,9 +127,20 @@ import qualified Data.Text                 as T
 -- by the formula \( R(w) = r(w) + \sum_{i=0}^{s-1} C_i, \) where \(s\) is the 
 -- size of \(w\).
 
+-- | See 'size'.
 type Size = Integer
+
+-- | Represents the /rank/ of a Dyck word.
 type Rank = Integer
 
+-- | Opaque Dyck word type. For functions to build Dyck words, see:
+--
+--     * 'empty', 
+--     * 'fromText', 
+--     * 'fromText'', 
+--     * 'unrank', 
+--     * 'unrankRelative', and 
+--     * 'unrankRelative''.
 data DyckWord = DyckWord 
   { _size    :: !Size
   , _absRank :: !Rank
@@ -136,12 +148,26 @@ data DyckWord = DyckWord
   , _text    :: !Text
   } deriving (Show)
 
+-- | Two Dyck words are considered equal when they have the same /absolute/
+--   rank. E.g.;
+-- 
+-- >>> fromText' "010011000111" == fromText' "xyxxyyxxxyyy"
+-- True
 instance Eq DyckWord where
   a == b = _absRank a == _absRank b
 
+-- | Dyck words of the same size are ordered lexicographically, but a smaller 
+--   Dyck word always gets precedence over a bigger one.
+--
+-- >>> fromText' "0011" < fromText' "0101"
+-- True
+--
+-- >>> fromText' "0101" > fromText' "01"
+-- True
 instance Ord DyckWord where
   a <= b = _absRank a <= _absRank b
 
+-- | The /empty/ Dyck word.
 empty :: DyckWord
 empty = DyckWord 
   { _size    = 0
@@ -175,7 +201,15 @@ juxtapose a b
       | 0 == _absRank b = True
       | otherwise = firstChar a == firstChar b && finalChar a == finalChar b
 
-setAlphabet :: Char -> Char -> DyckWord -> DyckWord
+-- | Change the alphabet of a Dyck word. An alphabet has two characters, here
+--   referred to as the /left/ and /right/ symbol, respectively. For example:
+--
+-- >>> toText (setAlphabet 'x' 'o' (unrank 55))
+-- xoxxoxxooo
+setAlphabet :: Char       -- ^ Left symbol
+            -> Char       -- ^ Right symbol
+            -> DyckWord 
+            -> DyckWord
 setAlphabet a' b' w = w { _text = f `T.map` t }
   where
     t = _text w
@@ -194,6 +228,9 @@ setAlphabet a' b' w = w { _text = f `T.map` t }
 --      (u)v     +\!\!\!+\;w &= (u)[ v +\!\!\!+\; w ]
 --    \end{align}
 -- \]
+--
+-- If the two words use different alphabets, the concatenated word will 
+-- inherit the first word's symbol set.
 concatWords :: DyckWord -> DyckWord -> DyckWord
 concatWords a b = fromText' (juxtapose a b)
 
@@ -201,14 +238,19 @@ instance Monoid DyckWord where
   mappend = concatWords
   mempty = empty
 
+-- | Return the /absolute/ rank of a Dyck word. That is, its position in the 
+--   (shortlex) ordered sequence of /all/ Dyck words.
 rank :: DyckWord -> Rank
 rank = _absRank
 
+-- | Return the /relative/ rank of a Dyck word. 
 rankRelative :: DyckWord -> Rank
 rankRelative = _relRank
 
 -- | Parse a 'Text' value to a 'DyckWord'. The result is wrapped in a 'Maybe', 
---   so that the value is 'Nothing' if parsing fails. 
+--   so that the value becomes 'Nothing' if parsing fails. The alphabet of the 
+--   word is determined by looking at the first and last characters of the
+--   input.
 fromText :: Text -> Either String DyckWord
 fromText t 
     | T.null t  = Right empty
@@ -263,7 +305,7 @@ sizeOffs n x
 
 -- | Return the /n/-th Dyck word, restricted to only words of a given size.
 --   Words are lexicographically ordered. The result is wrapped in a 'Maybe', 
---   since . 
+--   and 'Nothing' if the given rank is outside of the valid range. 
 unrankRelative :: Size -> Rank -> Maybe DyckWord 
 unrankRelative s r 
     | r < 0 
@@ -283,7 +325,8 @@ unrankRelative s r
       where 
         j = i - catalanTriangle y (x - 1) 
 
--- | This is an unsafe version of 'unrankRelative'.
+-- | Unsafe version of 'unrankRelative'. This function throws an error if the 
+--   given rank is outside of the valid range. 
 unrankRelative' :: Size -> Rank -> DyckWord
 unrankRelative' s = fromJust . unrankRelative s
 
