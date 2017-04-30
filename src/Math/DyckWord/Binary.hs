@@ -1,5 +1,7 @@
 module Math.DyckWord.Binary
-  ( empty
+  ( Size
+  , Rank
+  , empty
   , size 
   , concatWords 
   , rank 
@@ -16,7 +18,7 @@ module Math.DyckWord.Binary
 import Data.Maybe                          ( fromJust )
 import Data.Monoid                         ( (<>) )
 import Data.Text                           ( Text, unfoldrN )
-import Math.Combinatorics.Exact.Binomial
+import Math.DyckWord.Binary.Internal
 
 import qualified Data.Text                 as T
 
@@ -131,16 +133,3 @@ wordsOfSize = ofSize unrankRelative'
 
 ofSize :: (Size -> Integer -> b) -> Size -> [b]
 ofSize f s = f s <$> [0 .. catalan (fromIntegral s) - 1]
-
-catalanTriangle :: Integer -> Integer -> Integer
-catalanTriangle _ 0 = 1
-catalanTriangle n k = (choose (n + k) (k - 1) * (n - k + 1)) `div` k 
-
-catalanSum :: Int -> Integer
-catalanSum = (scanl (+) 0 (catalan <$> [0..]) !!)
-
-catalan :: (Integral a, Integral b) => a -> b
-catalan 0 = 1
-catalan 1 = 1
-catalan 2 = 2
-catalan n = let m = fromIntegral n in (2*m) `choose` m `div` (m + 1) 
