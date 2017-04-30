@@ -48,8 +48,23 @@ empty = DyckWord
 size :: DyckWord -> Size
 size = _size
 
+juxtapose :: DyckWord -> DyckWord -> Maybe Text
+juxtapose a b 
+    | compatible = Just (_text a <> _text b)
+    | otherwise  = Nothing
+  where
+    firstChar = T.head . _text
+    finalChar = T.last . _text
+    compatible 
+      | 0 == _absRank a = True
+      | 0 == _absRank b = True
+      | otherwise = (firstChar a == firstChar b) && (finalChar a == finalChar b)
+
 concatWords :: DyckWord -> DyckWord -> DyckWord
-concatWords a b = fromText' (_text a <> _text b)
+concatWords a b = 
+    case fromText' <$> juxtapose a b of
+      Nothing -> error "incompatible alphabets"
+      Just c -> c
 
 instance Monoid DyckWord where
   mappend = concatWords
