@@ -156,7 +156,7 @@ data DyckWord = DyckWord
 instance Eq DyckWord where
   a == b = _absRank a == _absRank b
 
--- | Dyck words of the same size are ordered lexicographically, but a smaller 
+-- | Dyck words of the same size are ordered lexicographically, and a smaller 
 --   Dyck word always gets precedence over a bigger one.
 --
 -- >>> fromText' "0011" < fromText' "0101"
@@ -283,7 +283,7 @@ fromText' t =
       Right r -> r 
       Left  _ -> error "not a valid dyck word"
 
--- | Return the textual representation of a 'DyckWord'.
+-- | Return a textual representation of a 'DyckWord'.
 toText :: DyckWord -> Text
 toText = _text
 
