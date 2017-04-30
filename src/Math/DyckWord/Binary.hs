@@ -3,6 +3,7 @@ module Math.DyckWord.Binary
   , Rank
   , empty
   , size 
+  , setAlphabet
   , concatWords 
   , rank 
   , rankRelative 
@@ -48,23 +49,30 @@ empty = DyckWord
 size :: DyckWord -> Size
 size = _size
 
-juxtapose :: DyckWord -> DyckWord -> Maybe Text
+juxtapose :: DyckWord -> DyckWord -> Text
 juxtapose a b 
-    | compatible = Just (_text a <> _text b)
-    | otherwise  = Nothing
+    | compatible = _text a <> _text b
+    | otherwise  = _text a <> _text (setAlphabet (firstChar a) (finalChar a) b)
   where
     firstChar = T.head . _text
     finalChar = T.last . _text
     compatible 
       | 0 == _absRank a = True
       | 0 == _absRank b = True
-      | otherwise = (firstChar a == firstChar b) && (finalChar a == finalChar b)
+      | otherwise = firstChar a == firstChar b && finalChar a == finalChar b
+
+setAlphabet :: Char -> Char -> DyckWord -> DyckWord
+setAlphabet a' b' w = w { _text = f `T.map` t }
+  where
+    t = _text w
+    a = T.head t
+    b = T.last t
+    f c | c == a = a'
+        | c == b = b'
+        | otherwise = error "not a valid dyck word"
 
 concatWords :: DyckWord -> DyckWord -> DyckWord
-concatWords a b = 
-    case fromText' <$> juxtapose a b of
-      Nothing -> error "incompatible alphabets"
-      Just c -> c
+concatWords a b = fromText' (juxtapose a b)
 
 instance Monoid DyckWord where
   mappend = concatWords
