@@ -29,14 +29,19 @@ saysThat s action = do
 
 infixl 0 `saysThat` 
 
+makeSure :: Bool -> Expectation
+makeSure = shouldBe True  
+
 rankAfterUnrank :: Integer -> IO ()
 rankAfterUnrank n = showN n `saysThat` rank (unrank n) `shouldBe` n
 
 checkSize :: Integer -> Integer -> IO ()
 checkSize s n = show (s, n) `saysThat` size (unrankRelative' s n) `shouldBe` s
 
-makeSure :: Bool -> Expectation
-makeSure = shouldBe True  
+concatRespectsSize a b = size (u <> v) `shouldBe` (size u + size v)
+  where
+    u = fromText' a
+    v = fromText' b
 
 main :: IO ()
 main = hspec $ do
@@ -95,3 +100,20 @@ main = hspec $ do
 
       it "works with different alphabets" $ do
         makeSure (fromText' "(()(())()())" == fromText' "001001101011") 
+
+    describe "setAlphabet" $ do
+      it "replaces the characters in a word's Text value" $ do
+        toText (setAlphabet '0' '1' $ unrank 10) `shouldBe` "00010111"
+        toText (setAlphabet '(' ')' $ fromText' "0000111101") `shouldBe` "(((())))()"
+        toText (setAlphabet '1' '0' $ fromText' "0000111101") `shouldBe` "1111000010"
+        toText (setAlphabet 'a' 'b' $ fromText' "xyxyxxyy") `shouldBe` "ababaabb"
+
+    describe "concatWords" $ do
+      it "returns a word with size equal to the sum of the sizes of the inputs" $ do
+        concatRespectsSize "(()())" "(((())))"
+        concatRespectsSize "ababaaaabbbb" "(((())))"
+        concatRespectsSize "" "(((())))"
+
+      it "works with different alphabets" $ do
+        concatWords (fromText' "()()") (fromText' "aaaabbbb") `shouldBe` (fromText' "()()(((())))")
+        concatWords (fromText' "()()") (fromText' "aaaabbbb") `shouldBe` (fromText' "010100001111")
