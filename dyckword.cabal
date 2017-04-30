@@ -6,6 +6,10 @@ description:
     and right parentheses, brackets, or some other symbols, together with the 
     /empty/ word. Words in this language are known as /Dyck words/, some 
     examples of which are @()()()@, @(())((()))@, and @((()()))()@.
+    .
+    The counting sequence associated with the Dyck language is the 
+    /Catalan numbers/, who describe properties of a great number of 
+    combinatorial objects.
 
 homepage:            https://github.com/githubuser/dyckword#readme
 license:             BSD3
