@@ -229,7 +229,7 @@ setAlphabet a' b' w = w { _text = f `T.map` t }
 --    \end{align}
 -- \]
 --
--- If the two words use different alphabets, the concatenated word will 
+-- If the two words have different alphabets, the concatenated word will 
 -- inherit the first word's symbol set.
 concatWords :: DyckWord -> DyckWord -> DyckWord
 concatWords a b = fromText' (juxtapose a b)
