@@ -95,12 +95,12 @@ toText = _text
 unrank :: Rank -> DyckWord 
 unrank r = unrankRelative' s i
   where
-    (s, i) = findOffs r 0 
+    (s, i) = sizeOffs r 0 
 
-findOffs :: Integral a => Integer -> a -> (a, Integer)
-findOffs n x 
+sizeOffs :: Integral a => Integer -> a -> (a, Integer)
+sizeOffs n x 
     | n < c     = (x, n)
-    | otherwise = findOffs (n - c) (x + 1) 
+    | otherwise = sizeOffs (n - c) (x + 1) 
   where 
     c = catalan (fromIntegral x)
 
