@@ -248,9 +248,8 @@ rankRelative :: DyckWord -> Rank
 rankRelative = _relRank
 
 -- | Parse a 'Text' value to a 'DyckWord'. The result is wrapped in a 'Maybe', 
---   so that the value becomes 'Nothing' if parsing fails. The alphabet of the 
---   word is determined by looking at the first and last characters of the
---   input.
+--   so that the value becomes 'Nothing' if parsing fails. The alphabet is 
+--   determined by looking at the first and last characters of the input.
 fromText :: Text -> Either String DyckWord
 fromText t 
     | T.null t  = Right empty
