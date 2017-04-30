@@ -5,6 +5,7 @@ import Control.Monad ( forM_ )
 import Data.Monoid   ( (<>) )
 import System.Console.ANSI
 import System.Exit   ( exitFailure )
+import System.IO
 import Test.Hspec
 
 import Math.DyckWord.Binary
@@ -25,7 +26,13 @@ saysThat s action = do
     setCursorColumn 2
     putStr s
     clearFromCursorToLineEnd
+    hFlush stdout
     action
+
+resetCursor :: IO ()
+resetCursor = do
+    setCursorColumn 0
+    clearFromCursorToLineEnd
 
 infixl 0 `saysThat` 
 
@@ -57,6 +64,13 @@ checkAssociativity triple@(a, b, c) = show triple `saysThat` p
     v = unrank b
     w = unrank c
 
+checkWordsOfSizeCatalan :: Integer -> IO ()
+checkWordsOfSizeCatalan n = 
+    show c_n ++ " words of size " ++ show n `saysThat` 
+      length (wordsOfSize n) `shouldBe` c_n
+  where
+    c_n = catalan n
+
 main :: IO ()
 main = hspec $ do
 
@@ -64,8 +78,7 @@ main = hspec $ do
       it "returns a dyck word with the expected size" $ do
         forM_ [10, 12, 22, 123, 425, 1028] $
           forM_ [1..22] . checkSize 
-        setCursorColumn 0
-        clearFromCursorToLineEnd
+        resetCursor
 
     describe "rank" $ do
       it "is the inverse of unrank" $ do
@@ -75,8 +88,7 @@ main = hspec $ do
              ++ [catalan  21..catalan 21+284]   
              ++ [catalan  11..catalan 11+989]   
              ++ [0..1000] ) rankAfterUnrank
-        setCursorColumn 0
-        clearFromCursorToLineEnd
+        resetCursor
 
     describe "unrankRelative" $ do
       it "returns Nothing for invalid relative rank" $ do
@@ -136,11 +148,14 @@ main = hspec $ do
 
       it "satisfies the identity law" $ do
         forM_ [0, 20..33350] checkIdentity
-        setCursorColumn 0
-        clearFromCursorToLineEnd
+        resetCursor
 
       it "is associative" $ do
         forM_ [(a, b, c) | a <- [0, 20, 1000], b <- [0..300], c <- [0, 50..200]] checkAssociativity
-        setCursorColumn 0
-        clearFromCursorToLineEnd
+        resetCursor
+
+    describe "wordsOfSize" $ do
+      it "matches the Catalan numbers" $ do
+        forM_ [0..17] checkWordsOfSizeCatalan
+        resetCursor
 
