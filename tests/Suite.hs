@@ -20,19 +20,20 @@ showN n
   | n > 10^30 = "..." ++ lastN 20 (show n) ++ " (huge number)"
   | otherwise = show n
 
-rankAfterUnrank :: Integer -> IO ()
-rankAfterUnrank n = do
+saysThat :: String -> IO a -> IO a
+saysThat s action = do
     setCursorColumn 2
-    putStr (showN n)
+    putStr s
     clearFromCursorToLineEnd
-    rank (unrank n) `shouldBe` n
+    action
+
+infixl 0 `saysThat` 
+
+rankAfterUnrank :: Integer -> IO ()
+rankAfterUnrank n = showN n `saysThat` rank (unrank n) `shouldBe` n
 
 checkSize :: Integer -> Integer -> IO ()
-checkSize s n = do
-    setCursorColumn 2
-    putStr $ show (s, n)
-    clearFromCursorToLineEnd
-    size (unrankRelative' s n) `shouldBe` s
+checkSize s n = show (s, n) `saysThat` size (unrankRelative' s n) `shouldBe` s
 
 makeSure :: Bool -> Expectation
 makeSure = shouldBe True  
@@ -94,4 +95,3 @@ main = hspec $ do
 
       it "works with different alphabets" $ do
         makeSure (fromText' "(()(())()())" == fromText' "001001101011") 
-
