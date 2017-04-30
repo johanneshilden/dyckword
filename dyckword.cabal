@@ -11,7 +11,7 @@ description:
     /Catalan numbers/, who describe properties of a great number of 
     combinatorial objects.
 
-homepage:            https://github.com/githubuser/dyckword#readme
+homepage:            https://github.com/johanneshilden/dyckword#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Johannes Hildén
@@ -44,4 +44,4 @@ Test-Suite dyckword-testsuite
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/dyckword
+  location: https://github.com/johanneshilden/dyckword
