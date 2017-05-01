@@ -1,6 +1,6 @@
 # dyckword [![Build Status](https://img.shields.io/travis/johanneshilden/dyckword/master.svg?style=flat)](https://travis-ci.org/johanneshilden/dyckword)
 
-* Hackage documentation: http://hackage.haskell.org/package/dyckword-0.1.0.3/docs/Math-DyckWord-Binary.html
+Documentation available on [Hackage](http://hackage.haskell.org/package/dyckword-0.1.0.3/docs/Math-DyckWord-Binary.html)
 
 Install:
 
