@@ -72,6 +72,11 @@ checkWordsOfSizeCatalan n =
   where
     c_n = catalan n
 
+checkWordsOfSizeAgainstUnrank :: Integer -> Integer -> IO ()
+checkWordsOfSizeAgainstUnrank i j =
+    show (i, j) `saysThat` 
+     wordsOfSize i !! (fromIntegral j) `shouldBe` unrankRelative' i j
+
 main :: IO ()
 main = hspec $ do
 
@@ -158,6 +163,10 @@ main = hspec $ do
     describe "wordsOfSize" $ do
       it "matches the Catalan numbers" $ do
         forM_ [0..17] checkWordsOfSizeCatalan
+        resetCursor
+
+      it "matches the result of unrankRelative'" $ do
+        forM_ [8..12] $ forM_ [8..1125] . checkWordsOfSizeAgainstUnrank
         resetCursor
 
     describe "fromText" $ do
