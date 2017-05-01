@@ -2,7 +2,6 @@
 module Main where
 
 import Control.Monad ( forM_ )
-import Data.Either   ( isLeft )
 import Data.Monoid   ( (<>) )
 import System.Console.ANSI
 import System.Exit   ( exitFailure )
@@ -13,6 +12,10 @@ import Math.DyckWord.Binary
 import Math.DyckWord.Binary.Internal
 
 import qualified Data.Text as T
+
+isLeft :: Either a b -> Bool
+isLeft (Left  _) = True
+isLeft (Right _) = False
 
 lastN :: Int -> [a] -> [a]
 lastN n xs = drop (length xs - n) xs
