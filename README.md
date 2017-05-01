@@ -48,6 +48,15 @@ cabal install dyckword
 λ> rank $ fromText' "(())()(((())))"
 480
 
+λ> rank $ fromText' "ooxxoxooooxxxx"
+480
+
+λ> fromText "aaaa"
+Left "bad input"
+
+λ> fromText "()()" > fromText "(())"
+True
+
 λ> mapM_ print (toText <$> wordsOfSize 5)
 "((((()))))"
 "(((()())))"
