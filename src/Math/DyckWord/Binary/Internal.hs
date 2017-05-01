@@ -1,5 +1,6 @@
 module Math.DyckWord.Binary.Internal where
 
+import Control.Applicative                    ( (<$>) )
 import Math.Combinatorics.Exact.Binomial
 
 catalanTriangle :: Integer -> Integer -> Integer
