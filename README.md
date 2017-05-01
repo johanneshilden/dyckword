@@ -1,4 +1,4 @@
-# dyckword
+# dyckword [![Build Status](https://img.shields.io/travis/johanneshilden/dyckword/master.svg?style=flat)](https://travis-ci.org/johanneshilden/dyckword)
 
 In formal language theory, the *Dyck language* consists of all strings of evenly balanced left and right parentheses, brackets, or some other symbols, together with the *empty* word. Words in this language (named after German mathematician Walther von Dyck) are known as *Dyck words*, some examples of which are `()()()`, `(())((()))`, and `((()()))()`.
 
