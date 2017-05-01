@@ -239,6 +239,8 @@ setAlphabet a' b' w = w { _text = f `T.map` t }
 concatWords :: DyckWord -> DyckWord -> DyckWord
 concatWords a b = fromText' (juxtapose a b)
 
+-- | The Dyck language forms a monoid under 'concatWords', with the 'empty'
+--   word as identity.
 instance Monoid DyckWord where
   mappend = concatWords
   mempty = empty
