@@ -79,7 +79,7 @@ module Math.DyckWord.Binary (
   ) where
 
 import Data.Maybe                          ( fromJust )
-import Data.Monoid                         ( (<>) )
+import Data.Monoid
 import Data.Text                           ( Text, unfoldrN )
 import Math.DyckWord.Binary.Internal
 
