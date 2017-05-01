@@ -78,6 +78,7 @@ module Math.DyckWord.Binary (
   , wordsOfSize 
   ) where
 
+import Control.Applicative                 ( (<$>) )
 import Data.Maybe                          ( fromJust )
 import Data.Monoid
 import Data.Text                           ( Text, unfoldrN )
