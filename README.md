@@ -1,4 +1,4 @@
-# dyckword [![Build Status](https://img.shields.io/travis/johanneshilden/dyckword/master.svg?style=flat)](https://travis-ci.org/johanneshilden/dyckword)
+# dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword)
 
 ## Documentation
 
