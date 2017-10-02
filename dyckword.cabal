@@ -15,7 +15,7 @@ homepage:            https://github.com/laserpants/dyckword#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Johannes Hildén
-maintainer:          johannes@isomorphic.co
+maintainer:          hildenjohannes@gmail.com
 copyright:           2017 Johannes Hildén
 category:            Math
 build-type:          Simple

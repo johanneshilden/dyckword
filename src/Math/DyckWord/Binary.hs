@@ -3,7 +3,7 @@
 -- Module      : Math.DyckWord.Binary
 -- Copyright   : (c) 2017 Johannes Hildén
 -- License     : BSD3
--- Maintainer  : johannes@isomorphic.co
+-- Maintainer  : hildenjohannes@gmail.com
 -- Stability   : experimental
 -- Portability : GHC
 --
