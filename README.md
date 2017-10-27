@@ -1,5 +1,23 @@
 # dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword) [![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Language](https://img.shields.io/badge/language-Haskell-yellow.svg)](https://www.haskell.org/) [![Hackage](https://img.shields.io/hackage/v/dyckword.svg)](http://hackage.haskell.org/package/dyckword)
 
+## Background
+
+In formal language theory, the *Dyck language* consists of all strings of evenly balanced left and right parentheses, brackets, or some other symbols, together with the *empty* word. Words in this language (named after German mathematician Walther von Dyck) are known as *Dyck words*, some examples of which are `()()()`, `(())((()))`, and `((()()))()`.
+
+The type of Dyck language considered here is defined over a binary alphabet. If we take this alphabet to be the set Σ = {(, )}, then the binary Dyck language is the subset of Σ* (the Kleene closure of Σ) of all words that satisfy two conditions:
+
+1. The number of left brackets must be the same as the number of right brackets.
+2. Going from left to right, for each character read, the total number of right brackets visited must be less than or equal to the number of left brackets up to the current position.
+
+E.g., `(()(()` and `())(())()` are **not** Dyck words.
+
+When regarded as a combinatorial class &ndash; with the size of a word defined as the number of bracket pairs it contains &ndash; the counting sequence associated with the Dyck language is the *Catalan numbers*.
+
+```
+λ> take 15 $ (length . wordsOfSize) <$> [0..]
+[1,1,2,5,14,42,132,429,1430,4862,16796,58786,208012,742900,2674440]
+```
+
 ## Documentation
 
 See [Hackage](http://hackage.haskell.org/package/dyckword/docs/Math-DyckWord-Binary.html).
@@ -103,22 +121,3 @@ True
 "()()()(())"
 "()()()()()"
 ```
-
-## Background
-
-In formal language theory, the *Dyck language* consists of all strings of evenly balanced left and right parentheses, brackets, or some other symbols, together with the *empty* word. Words in this language (named after German mathematician Walther von Dyck) are known as *Dyck words*, some examples of which are `()()()`, `(())((()))`, and `((()()))()`.
-
-The type of Dyck language considered here is defined over a binary alphabet. If we take this alphabet to be the set Σ = {(, )}, then the binary Dyck language is the subset of Σ* (the Kleene closure of Σ) of all words that satisfy two conditions:
-
-1. The number of left brackets must be the same as the number of right brackets.
-2. Going from left to right, for each character read, the total number of right brackets visited must be less than or equal to the number of left brackets up to the current position.
-
-E.g., `(()(()` and `())(())()` are **not** Dyck words.
-
-When regarded as a combinatorial class &ndash; with the size of a word defined as the number of bracket pairs it contains &ndash; the counting sequence associated with the Dyck language is the *Catalan numbers*.
-
-```
-λ> take 15 $ (length . wordsOfSize) <$> [0..]
-[1,1,2,5,14,42,132,429,1430,4862,16796,58786,208012,742900,2674440]
-```
-
