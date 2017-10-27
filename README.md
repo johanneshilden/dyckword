@@ -1,4 +1,6 @@
-# dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+# dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Language](https://img.shields.io/badge/language-Haskell-orange.svg)](https://www.haskell.org/)
+
+img.shields.io/badge/language-Haskell-green.svg
 
 ## Documentation
 
