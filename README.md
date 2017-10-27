@@ -1,4 +1,4 @@
-# dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword)
+# dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 ## Documentation
 
