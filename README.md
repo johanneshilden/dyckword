@@ -1,4 +1,4 @@
-# dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Language](https://img.shields.io/badge/language-Haskell-orange.svg)](https://www.haskell.org/) [![Hackage](https://img.shields.io/hackage/v/dyckword.svg)](http://hackage.haskell.org/package/dyckword)
+# dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Language](https://img.shields.io/badge/language-Haskell-yellow.svg)](https://www.haskell.org/) [![Hackage](https://img.shields.io/hackage/v/dyckword.svg)](http://hackage.haskell.org/package/dyckword)
 
 ## Documentation
 
