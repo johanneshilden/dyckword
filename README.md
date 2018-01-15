@@ -1,5 +1,10 @@
 # dyckword [![Build Status](https://img.shields.io/travis/laserpants/dyckword/master.svg?style=flat)](https://travis-ci.org/laserpants/dyckword) [![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Language](https://img.shields.io/badge/language-Haskell-yellow.svg)](https://www.haskell.org/) [![Hackage](https://img.shields.io/hackage/v/dyckword.svg)](http://hackage.haskell.org/package/dyckword)
 
+* [Background](#Background)
+* [Documentation](#Documentation)
+* [Install](#Install)
+* [Examples](#Examples)
+
 ## Background
 
 In formal language theory, the *Dyck language* consists of all strings of evenly balanced left and right parentheses, brackets, or some other symbols, together with the *empty* word. Words in this language (named after German mathematician Walther von Dyck) are known as *Dyck words*, some examples of which are `()()()`, `(())((()))`, and `((()()))()`.
